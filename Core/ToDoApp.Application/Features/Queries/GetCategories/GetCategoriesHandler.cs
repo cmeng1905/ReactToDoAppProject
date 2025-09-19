@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ToDoApp.Application.Dtos.Category;
+using ToDoApp.Domain.Entites;
 using ToDoApp.Persistence.Contexts;
 
 namespace ToDoApp.Application.Features.Queries.GetCategories
@@ -15,8 +16,12 @@ namespace ToDoApp.Application.Features.Queries.GetCategories
     {
         public  async Task<GetCategoriesResponse> Handle(GetCategoriesRequest request, CancellationToken cancellationToken)
         {
-            var categories = await _toDoContext.Categories.ToListAsync();
-            var mappedCategories = _mapper.Map<List<CategoryDto>>(categories);
+            var categories = _toDoContext.Categories.AsQueryable();
+            if(request.Id.HasValue)
+            {
+                categories = categories.Where(c => c.Id == request.Id.Value);
+            }
+            var mappedCategories = _mapper.Map<List<CategoryDto>>(await categories.ToListAsync());
             return new GetCategoriesResponse
             {
                 Categories = mappedCategories

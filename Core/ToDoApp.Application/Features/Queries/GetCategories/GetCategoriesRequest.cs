@@ -9,5 +9,6 @@ namespace ToDoApp.Application.Features.Queries.GetCategories
 {
     public class GetCategoriesRequest: IRequest<GetCategoriesResponse>
     {
+        public int? Id { get; set; }
     }
 }

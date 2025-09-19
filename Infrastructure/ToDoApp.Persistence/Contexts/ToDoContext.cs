@@ -14,9 +14,7 @@ namespace ToDoApp.Persistence.Contexts
         //Update-Database
         public ToDoContext(DbContextOptions<ToDoContext> options) : base(options) { }
         public DbSet<ToDo> ToDos { get; set; }
-
         public DbSet<Category> Categories { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ToDoContext).Assembly);
