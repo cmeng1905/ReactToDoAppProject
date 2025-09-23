@@ -18,9 +18,7 @@ namespace ToDoApp.Application.Features.Queries.GetCategories
         {
             var categories = _toDoContext.Categories.AsQueryable();
             if(request.Id.HasValue)
-            {
                 categories = categories.Where(c => c.Id == request.Id.Value);
-            }
             var mappedCategories = _mapper.Map<List<CategoryDto>>(await categories.ToListAsync(cancellationToken));
             return new GetCategoriesResponse
             {

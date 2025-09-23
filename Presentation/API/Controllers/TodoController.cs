@@ -16,5 +16,12 @@ namespace API.Controllers
             var response = await Mediator.Send(new GetTodosRequest());
             return response;
         }
+
+        [HttpGet("todos/{id}")]
+        public async Task<GetTodosResponse> GetTodosById(int id)
+        {
+            var response = await Mediator.Send(new GetTodosRequest { Id = id });
+            return response;
+        }
     }
 }

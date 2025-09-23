@@ -9,5 +9,6 @@ namespace ToDoApp.Application.Features.Queries.GetTodos
 {
     public class GetTodosRequest:IRequest<GetTodosResponse>
     {
+        public int? Id { get; set; }
     }
 }
