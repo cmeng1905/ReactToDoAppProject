@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Http;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace ToDoApp.Application.Exceptions
 {
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IHostEnvironment _env;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next,IHostEnvironment env)
         {
             _next = next;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -32,7 +30,7 @@ namespace ToDoApp.Application.Exceptions
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
 
@@ -56,14 +54,21 @@ namespace ToDoApp.Application.Exceptions
             //        statusCode = context.Response.StatusCode
             //    })
             //};
-            var result = JsonConvert.SerializeObject(new
+            //var result = JsonConvert.SerializeObject(new
+            //{
+            //    message = exception.Message,
+            //    errorType = exception.GetType().Name,
+            //    statusCode = context.Response.StatusCode
+            //});
+            var response = new ProblemDetails
             {
-                message = exception.Message,
-                errorType = exception.GetType().Name,
-                statusCode = context.Response.StatusCode
-            });
-
-            return context.Response.WriteAsync(result);
+                Status = 500,
+                Detail = _env.IsDevelopment() ? exception.StackTrace?.ToString() : null,
+                Title = exception.Message
+            };
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var result = JsonSerializer.Serialize(response, options);
+            await context.Response.WriteAsync(result);
         }
     }
 }
