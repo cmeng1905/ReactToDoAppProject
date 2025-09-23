@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ToDoApp.Application.Dtos.Category
+﻿namespace ToDoApp.Application.Dtos.ToDo
 {
     public class ToDoDto
     {
@@ -16,6 +10,6 @@ namespace ToDoApp.Application.Dtos.Category
 
         public int CategoryId { get; set; }
 
-        public CategoryDto Category { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
     }
 }
